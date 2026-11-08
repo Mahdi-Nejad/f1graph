@@ -1,0 +1,43 @@
+# --- python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# --- virtual environments ---
+.venv/
+venv/
+env/
+
+# --- tooling caches ---
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# --- data ---
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*.parquet
+data/processed/*.csv
+!data/processed/.gitkeep
+
+# --- env & secrets ---
+.env
+.env.*
+!.env.example
+
+# --- notebooks ---
+.ipynb_checkpoints/
+
+# --- os junk ---
+.DS_Store
+Thumbs.db
+
+# --- editors ---
+.vscode/
+.idea/
