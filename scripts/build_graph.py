@@ -5,7 +5,7 @@ import json
 import sys
 from pathlib import Path
 
-from f1graph.graph.builder import constructor_nodes, driver_nodes
+from f1graph.graph.builder import constructor_nodes, driver_nodes, drove_for_edges
 
 RAW_DIR = Path("data/raw")
 
@@ -34,6 +34,14 @@ def main() -> int:
         print(f"\n{len(c_nodes)} constructor nodes")
         for node_id, attrs in list(c_nodes.items())[:3]:
             print(f"  {node_id}: {attrs['label']}")
+
+    standings_path = RAW_DIR / f"standings_{args.season}.json"
+    if standings_path.exists():
+        standings = json.loads(standings_path.read_text())
+        edges = drove_for_edges(standings)
+        print(f"\n{len(edges)} DROVE_FOR edges")
+        for e in edges[:3]:
+            print(f"  {e['source']} -> {e['target']}")
 
     return 0
 
