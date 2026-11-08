@@ -9,10 +9,15 @@ from f1graph.io.jolpica import JolpicaError, fetch
 
 OUT_DIR = Path("data/raw")
 
-# type -> (endpoint, table key, list key) in the Jolpica payload
+# type -> (endpoint, path to the list of items in the payload)
+# for standings, -1 means "last round", i.e. final standings for the season
 ENDPOINTS = {
-    "drivers": ("drivers", "DriverTable", "Drivers"),
-    "constructors": ("constructors", "ConstructorTable", "Constructors"),
+    "drivers": ("drivers", ["DriverTable", "Drivers"]),
+    "constructors": ("constructors", ["ConstructorTable", "Constructors"]),
+    "standings": (
+        "driverstandings",
+        ["StandingsTable", "StandingsLists", -1, "DriverStandings"],
+    ),
 }
 
 
@@ -22,12 +27,14 @@ def main() -> int:
     parser.add_argument("--type", choices=ENDPOINTS, default="drivers")
     args = parser.parse_args()
 
-    endpoint, table_key, list_key = ENDPOINTS[args.type]
+    endpoint, path = ENDPOINTS[args.type]
 
     try:
         data = fetch(f"{args.season}/{endpoint}/")
-        items = data[table_key][list_key]
-    except (JolpicaError, KeyError) as exc:
+        items = data
+        for key in path:
+            items = items[key]
+    except (JolpicaError, KeyError, IndexError) as exc:
         print(f"failed: {exc}", file=sys.stderr)
         return 1
 
